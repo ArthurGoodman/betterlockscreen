@@ -34,12 +34,14 @@ init_filenames() {
 	dim="$folder/dim.png" # image with subtle overlay of black
 	blur="$folder/blur.png" # blurred version
 	dimblur="$folder/dimblur.png"
+	pixelate="$folder/pixelate.png"
 
 	# lockscreen images (images to be used as lockscreen background)
 	l_resized="$folder/l_resized.png"
 	l_dim="$folder/l_dim.png"
 	l_blur="$folder/l_blur.png"
 	l_dimblur="$folder/l_dimblur.png"
+	l_pixelate="$folder/l_pixelate.png"
 }
 
 init_filenames $res
@@ -112,6 +114,11 @@ lockselect() {
 			lock "$l_dimblur"
 			;;
 
+		pixelate)
+			# set lockscreen with pixelated background
+			lock "$l_pixelate"
+			;;
+
 		*)
 			# default lockscreen
 			lock "$l_resized"
@@ -171,7 +178,7 @@ update() {
 	convert "$orig_wall" -resize "$res""^" -gravity center -extent "$res" "$resized"
 
 	echo
-	echo 'Applying dim and blur effect to resized image'
+	echo 'Applying effects to resized image'
 	# dim
 	convert "$resized" -fill black -colorize 40% "$dim"
 
@@ -193,6 +200,12 @@ update() {
 		-resize "$res^" -gravity center -extent "$res" \
 		"$dimblur"
 
+	# pixelate
+	convert "$resized" \
+		-scale 5% \
+		-scale 2000% \
+		"$pixelate"
+
 	# lockscreen backgrounds
 
 	echo
@@ -206,8 +219,11 @@ update() {
 	# blur
 	convert "$blur" -draw "fill rgba(0, 0, 0, 0.4) $rectangles" "$l_blur"
 
-	# blur
+	# dimblur
 	convert "$dimblur" -draw "fill rgba(0, 0, 0, 0.4) $rectangles" "$l_dimblur"
+
+	# pixelate
+	convert "$pixelate" -draw "fill rgba(0, 0, 0, 0.4) $rectangles" "$l_pixelate"
 	echo
 	echo 'All required changes have been applied'
 }
@@ -233,6 +249,11 @@ wallpaper() {
 		dimblur)
 			# set dimmed + blurred image as wallpaper
 			feh --bg-fill $dimblur
+			;;
+
+		pixelate)
+			# set pixelated image as wallpaper
+			feh --bg-fill $pixelate
 			;;
 	esac
 }
@@ -282,6 +303,7 @@ usage() {
 	echo '		E.g: betterlockscreen -l dim (for dimmed background)'
 	echo '		E.g: betterlockscreen -l blur (for blurred background)'
 	echo '		E.g: betterlockscreen -l dimblur (for dimmed + blurred background)'
+	echo '		E.g: betterlockscreen -l pixelate (for pixelated background)'
 	echo
 	echo
 	echo '	-s --suspend'
@@ -290,6 +312,7 @@ usage() {
 	echo '		E.g: betterlockscreen -s dim (for dimmed background)'
 	echo '		E.g: betterlockscreen -s blur (for blurred background)'
 	echo '		E.g: betterlockscreen -s dimblur (for dimmed + blurred background)'
+	echo '		E.g: betterlockscreen -s pixelate (for pixelated background)'
 	echo
 	echo
 	echo '	-w --wall'
@@ -299,6 +322,7 @@ usage() {
 	echo '		E.g: betterlockscreen -w dim (for dimmed wallpaper)'
 	echo '		E.g: betterlockscreen -w blur (for blurred wallpaper)'
 	echo '		E.g: betterlockscreen -w dimblur (for dimmed + blurred wallpaper)'
+	echo '		E.g: betterlockscreen -w pixelate (for pixelated wallpaper)'
 	echo
 	echo
 	echo '	-r --resolution'
