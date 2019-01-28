@@ -48,9 +48,10 @@ init_filenames $res
 
 
 prelock() {
-	if [ ! -z "$(pidof dunst)" ]; then
-		pkill -u "$USER" -USR1 dunst
-	fi
+	# if [ ! -z "$(pidof dunst)" ]; then
+	# 	pkill -u "$USER" -USR1 dunst
+	# fi
+    killall -SIGUSR1 dunst
 }
 
 
@@ -78,9 +79,10 @@ lock() {
 
 
 postlock() {
-	if [ ! -z "$(pidof dunst)" ] ; then
-		pkill -u "$USER" -USR2 dunst
-	fi
+	# if [ ! -z "$(pidof dunst)" ] ; then
+	# 	pkill -u "$USER" -USR2 dunst
+	# fi
+    killall -SIGUSR2 dunst
 }
 
 
